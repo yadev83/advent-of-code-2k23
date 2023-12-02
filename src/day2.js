@@ -63,4 +63,40 @@ console.log(`PART 1 SOLUTION : ${idsSum}`)
 console.log(`
 PART 2 CHALLENGE : As you continue your walk, the Elf poses a second question: 
 in each game you played, what is the fewest number of cubes of each color that could have been in the bag to make the game possible?
+The power of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together.
+The power of the minimum set of cubes in game 1 is 48. In games 2-5 it was 12, 1560, 630, and 36, respectively.
+For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
 `)
+
+// Update the games objects to include a minimum set (minimum set is the max number for each color through the game's sets)
+const gamesP2 = games.map(game => {
+    const minSet = game.sets.reduce((acc, set) => {
+        Object.entries(set).forEach(([color, nb]) => {
+            if(nb > acc[color])
+                acc[color] = nb
+        })
+
+        return acc
+    }, {
+        red: 0,
+        green: 0,
+        blue: 0
+    })
+
+    return {
+        ...game,
+        minimumSet: {
+            ...minSet,
+            power: Object.values(minSet).reduce((acc, nb) => {
+                if(nb)
+                    return acc * nb
+            }, 1) 
+        }
+    }
+})
+
+const powerSum = gamesP2.reduce((acc, game) => {
+    return acc + game.minimumSet.power
+}, 0)
+
+console.log(`PART 2 SOLUTION : ${powerSum}`)
